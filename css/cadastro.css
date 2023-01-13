@@ -1,0 +1,61 @@
+body {
+    margin: 0 auto;    
+}
+
+body *{
+    font-family: 'Righteous', cursive;
+    font-size: 16px;
+    text-shadow: 1px 1px 1px grey;
+}
+
+.cadastro_box {
+    padding: 2em;
+    margin: 0 auto;
+    width: 500px;    
+}
+
+.cell, .emptyCell {    
+    padding: 0.3em;
+    grid-gap: 0.1em;
+    border-radius: 5px;
+}
+
+.w3-button{
+    margin-top: 10px;
+    text-shadow: 0!important;
+}
+
+::placeholder, input{    
+    opacity: 0.8;
+    text-align: center;
+}
+
+a {
+    text-align: center;
+    color: red!important;
+    font-size: 10px!important;
+}
+
+.date_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.btn_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.5em;
+}
+
+/* --------------------------------------------------------- */
+/* --------- MEDIA ----------------------------------------- */
+/* --------------------------------------------------------- */
+
+@media only screen and (max-width: 768px) {
+
+    .cadastro_box {
+        display: block;
+        margin: 0 auto;
+        width: auto;    
+    }
+}

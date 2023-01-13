@@ -1,0 +1,45 @@
+
+@import url('https://fonts.googleapis.com/css?family=Russo+One');
+
+body {
+    /*background-image: url(img/tabletop.jpg);*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: cover;*/
+    margin: 0 auto;
+}
+
+body *{
+    font-family: 'Russo One', sans-serif;
+    font-size: 15px;
+    text-shadow: 1px 1px 1px grey;
+}
+
+.cadastro_box {
+
+    padding: 5em;
+    margin: 0 auto;
+    width: 500px;
+}
+
+.cell, .emptyCell {        
+    
+    padding: 0.3em;
+    grid-gap: 0.1em;
+    border-radius: 5px;
+}
+
+.w3-button{
+    margin-top: 10px;
+    text-shadow: 0!important;
+}
+
+::placeholder{
+    opacity: 0.5;
+}
+
+a {
+    text-align: center;
+    color: red!important;
+    font-size: 10px!important;
+}
+  

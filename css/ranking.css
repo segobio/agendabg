@@ -1,0 +1,146 @@
+
+.ranking_wrapper{    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5em;
+}
+
+#players{
+    width: 100%;
+    height: auto;
+    background: white;
+    border: 1px solid darkslategray;
+    border-radius: 5px;
+    border-spacing: 2px;
+}
+
+#players img{
+    width: 60px;
+}
+
+th {    
+    background: linear-gradient(to right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100));    
+    padding: 10px;    
+    border-radius: 0px 5px 5px 0px;
+    border-bottom: 1px solid darkgrey;
+    /*width: 11.111%;*/
+
+}
+
+th > h2{    
+    margin-block-start: 0.40em;
+    margin-block-end: 0.40em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+th > p{
+    font-size: 17px;
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+th > h2, p{    
+    color: white;
+    text-shadow: 2px 2px 2px black;
+}
+
+th, td {    
+    text-align: center;
+}
+
+.stat, .player{
+    box-shadow: 0.6px 0.6px 0.6px darkgrey;
+    border-radius: 5px;
+}
+
+tr{
+    border-bottom: 2px solid black;
+    margin: 5px!important;
+}
+
+.player{
+    padding: 10px;
+    background: darkgray;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    box-shadow: 1px 1px 1px dimgrey;
+}
+
+  td{
+    /*padding: 0.5em;*/
+    border-radius: 0px 5px 5px 0px;
+  }
+
+  td img{
+      height: 15px!important;
+      width: 15px!important;
+      margin-right: 5px;
+  }
+
+  td > p{
+    margin-block-start: 0.1em;
+    margin-block-end: 0.1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+  }
+
+  td > ul > li{
+      padding: 3px;
+  }
+
+td > ul > li > img{
+    padding-top: 1px;
+}
+
+.sorted_col{
+    background: gold!important;
+}
+
+.rec_nr{
+    display: none;        
+}
+
+  /*------------------------------------------------------
+   MOBILES
+   ------------------------------------------------------*/
+  @media only screen and (max-width: 810px){
+
+    body {
+        font-size: 10px!important;
+    }
+
+    .ranking_wrapper{
+        padding: 0;
+    }
+
+    th{
+        width: auto;
+        padding: 2px;
+    }
+
+    th > p{
+        font-size: 0px!important;
+    }
+    
+    #players img{
+        width: 20px;
+    }
+
+    td{
+        padding: 0;
+    }
+
+    .rec_txt{
+        display: none;        
+    }
+
+    .rec_nr{
+        display: block;
+    }
+
+  }

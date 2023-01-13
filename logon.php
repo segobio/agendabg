@@ -81,7 +81,7 @@ if( isset($_POST['user']) && isset($_POST['pass']) ){
                 </div>                    
             </form>
             <br>
-            <a class="flex-c" href="newuser.php"><p>CRIAR USUÁRIO</p></a>
+            <a class="flex-c" href="register.php"><p>CRIAR USUÁRIO</p></a>
 
         </div>
     </div>               

@@ -71,8 +71,10 @@
         $arrayDate = explode('-', $ObjectDate);
         $_SESSION["data_var_ano"] = $arrayDate[0];
         $_SESSION["data_var_mes"] = $arrayDate[1];
-    }else{
-        $ObjectDate = "2021-12";#constant("data_hoje_full");
+    }
+    else{
+        $ObjectDate = data_hoje_ano."-".data_hoje_mes;
+    #    $ObjectDate = "2021-12";#constant("data_hoje_full");
     }
 
 
@@ -159,6 +161,7 @@
     <!-- END FONTS -->
     <link rel="stylesheet" type="text/css" media="screen" href="css/index.css">
     <link rel="stylesheet" type="text/css" media="screen" href="css/flip-card.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/glitch.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/persistent-checkboxes.js"></script>
     <script src="js/index.js"></script>
@@ -186,7 +189,7 @@
 
         <div class="header_cell" id="upper_ym">
             <form name="input_date" method="POST">
-                <input type="month" id="start" min="2021-01" name="selected_date" value="2021-12">
+                <input type="month" id="start" min="" name="selected_date" value="<?php data_hoje_ano."-".data_hoje_mes?>">
                 <input type="submit" value="Enviar"/>
             </form>
         </div>
@@ -285,7 +288,7 @@
                 <div class="title"><p>Jogam</p></div>
 
                 <!-- Function f_printPlayer() prints both regular list and ranked list -->
-                <div class="players"><ul><?php f_printPlayer($row_players, $row_score); ?></ul></div>                
+                <div class="players"><?php f_printPlayer($row_players, $row_score); ?></div>
 
                 <div class="icon">
                     <img src="<?php echo $thumb ?>" alt="">

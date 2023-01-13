@@ -331,8 +331,12 @@
         if ($row_players != NULL) {            
             $index = count($row_players);
             for ($j=0; $j<$index; $j++){
-                if ($row_players[$j] != NULL){                
-                    echo "<li class='listplayer'><img class='img_nr_list' src='img/nu$p.png'><span class='player'>$row_players[$j]</li>";
+                if ($row_players[$j] != NULL){                    
+                    //echo "<li class='listplayer'><img class='img_nr_list' src='img/nu$p.png'><span class='player'>$row_players[$j]</li>";
+                    //echo "<img src='img/$row_players[$j].jpg' title='$row_players[$j]'>";
+                    //echo `<img src='img/$row_players[$j].jpg' onerror='this.onerror=null; this.src=img/anon.png' title='$row_players[$j]'>`;
+                    //echo `<img src="img/$row_players[$j].jpg" onerror="this.onerror=null; this.src='img/anon.png' title='$row_players[$j]'">`;
+                    echo "<picture><source srcset='img/$row_players[$j].jpg'/><img src='img/anon.png' alt='anon'/></picture>";
                     $p++;               
                 }else{
                     break;

@@ -44,8 +44,7 @@
     ## -------------------------------------------------------------------------------
     ## CONSTANTES PARA HOJE (DIA DO ACESSO DO JOGADOR)
     ## -------------------------------------------------------------------------------
-    define("data_hoje_full", date("Y-n-d"));
-    
+    define("data_hoje_full", date("Y-n-d"));    
     define("data_hoje_dia", date("d"));
     define("data_hoje_mes", date("n"));
     define("data_hoje_ano", date("Y"));
@@ -85,7 +84,8 @@
     $firstWeekDay = date("l", strtotime("$ObjectDate"));    
     $firstWeekDayNr = date("N", strtotime("$ObjectDate"));    
     $firstMonthDay = date("j", strtotime("$ObjectDate"));    
-    $currMonthDay = $firstMonthDay;
+    $day_of_month_loop = $firstMonthDay;
+    $full_gameday_loop = "$ObjectDate-$day_of_month_loop";
 
     #---------------------------------------------------------------------------
     # HANDLING THE "QUICKJOIN" EVENT
@@ -237,12 +237,13 @@
     
     for ( $i = $_SESSION["daysInMonth"]+$gamesThisMonth ; $i > 0 ; $i-- )
     {        
-        if ($gameDay == $currMonthDay || $switch == "on")
+        if ($gameDay == $day_of_month_loop || $switch == "on")
         {
+            $full_gameday_loop = "$ObjectDate-$day_of_month_loop";
             # Reseting the switch regardless
             $switch = "off";
 
-            # Formatting the date
+            # Inserts the current day in the loop as a gameday into the DB array
             $row[8] = date("d", strtotime($row[8]));            
             
             # Evento já aconteceu, mostrar a pountuação e medalhas
@@ -262,7 +263,7 @@
                 $nr_players = (count(array_filter($row_players)));
             }
             
-            $weekDay = strftime('%A', strtotime($fullCurrentDay));            
+            //$weekDay = strftime('%A', strtotime($fullCurrentDay));            
             $slots = $row[11] - $nr_players;            
             $minPlayers = $row[12];
             $thumb = $row[15];
@@ -273,8 +274,8 @@
 
             <div class="cell swapper-first" id="">
                 <div class="day_container">                    
-                    <!-- <div class="day_cell"><p><//?php echo utf8_encode("Dia $currMonthDay - $weekDay"); ?><p></div> -->
-                    <div class="day_cell"><p><?php echo "$currMonthDay/".$_SESSION["data_var_mes"]."/".$_SESSION["data_var_ano"] . " - $weekDay"; ?></p></div>
+                    <!-- <div class="day_cell"><p><//?php echo utf8_encode("Dia $day_of_month_loop - $weekDay"); ?><p></div> -->
+                    <div class="day_cell"><p><?php echo "$day_of_month_loop/".$_SESSION["data_var_mes"]."/".$_SESSION["data_var_ano"] . " - $weekDay"; ?></p></div>
                     <div class="join">
                         <a href="index.php?join=1&id=<?php echo $row[14]; ?>&date=<?php echo $fullCurrentDay; ?>">
                         <img src="img/add.png" title="Clique aqui pra uma inscrição rápida!">
@@ -304,11 +305,15 @@
                 <?php f_status($fullCurrentDay, $nr_players, $minPlayers); ?>
                 <div class="title"><p>Vagas</p></div>                
                 <div class="slot" gamedate=""><p><?php echo "$slots / $row[11]"; ?></p></div>
-                <div class="edit"><a id="chat_icon" href="javascript:void(0)" onclick="SwapDivsWithClick_1();"><img class="clock" src="img/love.png" alt=""></a><p>&nbsp;&nbsp;<?php echo getMuralNrMsg($conn, $row[14]) ?></p></div>
+                <div class="edit">
+                    <a id="chat_icon" href="javascript:void(0)" onclick="SwapDivsWithClick_1();">
+                    <img class="clock" src="img/love.png" alt=""></a>
+                    <p>&nbsp;&nbsp;<?php echo getMuralNrMsg($conn, $row[14]) ?></p>
+                </div>
                 
                 <div class="title"><p>Limite</p></div>                
-                <div class="count" gamehour="<?php echo calcHour($conn, $row[14], $row[13]); ?>" gamedate="<?php echo $fullCurrentDay; ?>"></div>                
-                
+                <div class="count" gamehour="<?php echo calcHour($conn, $row[14], $row[13]); ?>" gamedate="<?php echo $full_gameday_loop; ?>"></div>
+
                 <div class="edit">
                     <a id="pod_icon" href="score.php?id=<?php echo $row[14]; ?>"><img src="img/podium.png" alt=""></a>
                     <a id="edit_icon" href="cadastro.php?new=0&id=<?php echo $row[14]; ?>&date=<?php echo $fullCurrentDay; ?>"><img class="edit_img" src="img/edit.png" alt=""></a>
@@ -354,22 +359,24 @@
 
 
         if ($lastGameDay != $gameDay) {
-            $currMonthDay++;
+            $day_of_month_loop++;
         }else{
             $switch = "on";
         }
 
         # Pra que serve essa linha? O mesmo valor é recebido??
-        /* $fullCurrentDay = "$currYear-$currMonth-$currMonthDay"; */
+        /* $fullCurrentDay = "$currYear-$currMonth-$day_of_month_loop"; */
         
-        if ($currMonthDay <=31){
+        if ($day_of_month_loop <=31){
             # 19/SET - Adicionando um objeto date baseado no proximo dia da iteracao pra poder comparar datas
-            #$iterateDay_sec = new DateTime("$currYear-$currMonth-$currMonthDay");
+            #$iterateDay_sec = new DateTime("$currYear-$currMonth-$day_of_month_loop");
             $iterateDay_sec = new DateTime("$fullCurrentDay");
         }
         
         # Não sei o que faz essa entrada
-        $weekDay = date("l", strtotime("$fullCurrentDay"));
+            # Parece atualizar o dia da semana para o dia atual do loop
+        //$weekDay = date("l", strtotime("$fullCurrentDay"));
+        $weekDay = date("l", strtotime("2023-1-$day_of_month_loop"));
 
 
     } # Close the FOR loop

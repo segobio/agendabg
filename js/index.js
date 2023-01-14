@@ -44,11 +44,13 @@ $( document ).ready(function() {
        var gameDate = new Date($(this).attr('gamedate'));            
        var gameHour = $(this).attr('gamehour');
        var hourParts = gameHour.split('h'); // Parse time before and after the "h"       
-       var neGamewDate = gameDate.setHours(hourParts[0], hourParts[1], 00, 000); // Add hours to original date
-       var countDownDate = new Date(neGamewDate).getTime();
+       var newGameDate = gameDate.setHours(hourParts[0], hourParts[1], 00, 000); // Add hours to original date
+       var countDownDate = new Date(newGameDate).getTime();
        //var countDownDate = new Date(date).getTime();
        var now = new Date().getTime();
-       var distance = countDownDate - now;            
+       var distance = countDownDate - now;
+       
+       //debugger;
        
        // Time calculations for days, hours, minutes and seconds
        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -56,6 +58,8 @@ $( document ).ready(function() {
        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
        
+       //debugger;
+
        //var finished = false;
        
        /*--------------------------------------------
@@ -72,6 +76,8 @@ $( document ).ready(function() {
         //if(distance > 0 )                
         //    $(this).text(days + "d " + hours + "h " + minutes + "m " + seconds + "s");
 
+        //debugger;
+
        /*--------------------------------------------
        // LAST 12 HOURS TO REGISTER - YELLOW
        ---------------------------------------------*/
@@ -81,7 +87,9 @@ $( document ).ready(function() {
            // Last 12 hours for registration
            $(this).addClass("js_event_expiring");
            $(this).removeClass("count");
-       }            
+       }
+       
+       //debugger;
            
        /*---------------------------------------------------
        // "INSCRIÇÕES ENCERRADAS"
@@ -105,6 +113,8 @@ $( document ).ready(function() {
            $(this).siblings().last().html("<img style='height: 40px' src='img/pad.png' />");
        }  
        
+       //debugger;
+
        /*--------------------------------------------
        // AFTER X HOURS FALL BACK TO DEFAULT STYLE
        ---------------------------------------------*/
@@ -131,6 +141,8 @@ $( document ).ready(function() {
         }                                
         });
     }
+
+    //debugger;
 
     function handleSlots(){
 

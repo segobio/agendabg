@@ -611,9 +611,8 @@
         else{
             return "( 0 )";
         }
-    }
+    }    
 
-    
     function writeLog($user, $script){
     /*
         $hora = date("d/m/y - H:i:s");
@@ -625,7 +624,7 @@
         fwrite($myfile, $txt);
         fclose($myfile);
     */
-    }
+    }   
 
     function prev_Month(){
                 

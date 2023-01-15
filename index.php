@@ -20,7 +20,7 @@
     // write log about user action
     writeLog($_COOKIE['user'], $_SERVER['REQUEST_URI']);
 
-    if (isset($_POST['logoff']) && $_POST['logoff'] == 1)
+    if (isset($_GET['logoff']) && $_GET['logoff'] == 1)
     {
         setcookie("user", "", time()-3600, '/');
         setcookie("mail", "", time()-3600, '/');
@@ -44,43 +44,52 @@
     ## -------------------------------------------------------------------------------
     ## CONSTANTES PARA HOJE (DIA DO ACESSO DO JOGADOR)
     ## -------------------------------------------------------------------------------
-    define("data_hoje_full", date("Y-n-d"));    
-    define("data_hoje_dia", date("d"));
-    define("data_hoje_mes", date("n"));
-    define("data_hoje_ano", date("Y"));
+    define("date_of_access_full", date("Y-n-d"));    
+    define("date_of_access_day", date("d"));
+    define("date_of_access_month", date("n"));
+    define("date_of_access_year", date("Y"));
 
+    ## -------------------------------------------------------------------------------
+    ## GLOBAL / SESSION VARIABLES
+    ## -------------------------------------------------------------------------------
     # Date for the featured game
     $_SESSION["data_jogo"] = null;
-    $_SESSION["daysInMonth"] = null;
-
+    $_SESSION["nr_of_days_in_game_month"] = null;
     # Dates which will be used (and updated) for the monthly loop fetching of games
-    $_SESSION["data_var_full"] = constant("data_hoje_full");
-    $_SESSION["data_var_dia"] = constant("data_hoje_dia");
-    $_SESSION["data_var_mes"] = constant("data_hoje_mes");
-    $_SESSION["data_var_ano"] = constant("data_hoje_ano");
+    $_SESSION["date_of_access_full"] = constant("date_of_access_full");
+    $_SESSION["date_of_access_day"] = constant("date_of_access_day");
+    $_SESSION["date_of_access_month"] = constant("date_of_access_month");
+    $_SESSION["date_of_access_year"] = constant("date_of_access_year");
+    
+    # Session variables keep the date selected in the html picker
+    $_SESSION["date_of_selection_year"] = null;
+    $_SESSION["date_of_selection_month"] = null;
+    $_SESSION["date_of_selection_day"] = null;
+    $_SESSION["date_of_selection_full"] = null;
 
-    $ObjectDate = $_SESSION["data_var_ano"]-$_SESSION["data_var_mes"];
+    $ObjectDate = $_SESSION['date_of_access_year']."-".$_SESSION['date_of_access_month'];
 
-    ##
-    ## 1) BLOCO RECEBE O VALOR DA DATA (ANO-MES) ENVIADA PELO HTML DATE PICKER
-    ## 2) ATUALIZA AS VARIÁVEIS GLOBAIS DE DATA
+    ## ----------------------------------------------------------------------------------------------------------
+    ## SAVE DATE POSTED BY THE HTML DATE PICKER
     ## ----------------------------------------------------------------------------------------------------------
     if( isset($_POST['selected_date'])){
         $ObjectDate = $_POST['selected_date'];
         $arrayDate = explode('-', $ObjectDate);
-        $_SESSION["data_var_ano"] = $arrayDate[0];
-        $_SESSION["data_var_mes"] = $arrayDate[1];
+        $_SESSION["date_of_selection_year"] = $arrayDate[0];
+        $_SESSION["date_of_selection_month"] = $arrayDate[1];
+        $_SESSION["nr_of_days_in_game_month"] = cal_days_in_month(CAL_GREGORIAN, $arrayDate[1], $arrayDate[0]); // 31
     }
     else{
-        $ObjectDate = data_hoje_ano."-".data_hoje_mes;
-    #    $ObjectDate = "2021-12";#constant("data_hoje_full");
+        //$ObjectDate = date_of_access_year."-".date_of_access_month;
+        #    $ObjectDate = "2021-12";#constant("data_hoje_full");
+        $_SESSION["nr_of_days_in_game_month"] = cal_days_in_month(CAL_GREGORIAN, $_SESSION["date_of_access_month"], $_SESSION["date_of_access_year"]);
     }
 
 
     ## ----------------------------------------------------------------------------------------------------------
     ## SAVING DETAILS ABOUT CURRENT MONTH TO BUILD THE CALENDAR
     ## ----------------------------------------------------------------------------------------------------------    
-    $_SESSION["daysInMonth"] = cal_days_in_month(CAL_GREGORIAN, $_SESSION["data_var_mes"], $_SESSION["data_var_ano"]); // 31
+    $_SESSION["nr_of_days_in_game_month"] = cal_days_in_month(CAL_GREGORIAN, $arrayDate[1], $arrayDate[0]); // 31
     $firstWeekDay = date("l", strtotime("$ObjectDate"));    
     $firstWeekDayNr = date("N", strtotime("$ObjectDate"));    
     $firstMonthDay = date("j", strtotime("$ObjectDate"));    
@@ -206,10 +215,10 @@
     ## SELECIONANDO DO BANCO DE DADOS TODOS OS EVENTOS DO MES ATUAL
     ##---------------------------------------------------------------------------
 
-    $tmp_data_var_mes = $_SESSION["data_var_mes"];
-    $tmp_data_var_ano = $_SESSION["data_var_ano"];
+    $tmp_date_of_access_month = $_SESSION["date_of_access_month"];
+    $tmp_date_of_access_year = $_SESSION["date_of_access_year"];
 
-    $sql = "SELECT * FROM tb_diadejogo WHERE MONTH(data)=$tmp_data_var_mes AND YEAR(data)=$tmp_data_var_ano ORDER BY data";
+    $sql = "SELECT * FROM tb_diadejogo WHERE MONTH(data)=$tmp_date_of_access_month AND YEAR(data)=$tmp_date_of_access_year ORDER BY data";
     $query = mysqli_query($conn, $sql);
     $row = mysqli_fetch_row($query);    
     
@@ -229,13 +238,13 @@
     ## $iterateDay_sec RECEBE O DIA COMPLETO D-M-y PRA ITERAR NO MES
     ##---------------------------------------------------------------------------
 
-    $fullCurrentDay = $iterateDay_sec = constant("data_hoje_full");    
-    $iterateDay_sec = $currentDay_sec = new DateTime(constant("data_hoje_full"));
+    $fullCurrentDay = $iterateDay_sec = constant("date_of_access_full");    
+    $iterateDay_sec = $currentDay_sec = new DateTime(constant("date_of_access_full"));
     $interval = $iterateDay_sec->diff($currentDay_sec);
     $test_day = $interval->days;
 
     
-    for ( $i = $_SESSION["daysInMonth"]+$gamesThisMonth ; $i > 0 ; $i-- )
+    for ( $i = $_SESSION["nr_of_days_in_game_month"]+$gamesThisMonth ; $i > 0 ; $i-- )
     {        
         if ($gameDay == $day_of_month_loop || $switch == "on")
         {
@@ -275,7 +284,7 @@
             <div class="cell swapper-first" id="">
                 <div class="day_container">                    
                     <!-- <div class="day_cell"><p><//?php echo utf8_encode("Dia $day_of_month_loop - $weekDay"); ?><p></div> -->
-                    <div class="day_cell"><p><?php echo "$day_of_month_loop/".$_SESSION["data_var_mes"]."/".$_SESSION["data_var_ano"] . " - $weekDay"; ?></p></div>
+                    <div class="day_cell"><p><?php echo "$day_of_month_loop/".$_SESSION["date_of_access_month"]."/".$_SESSION["date_of_access_year"] . " - $weekDay"; ?></p></div>
                     <div class="join">
                         <a href="index.php?join=1&id=<?php echo $row[14]; ?>&date=<?php echo $fullCurrentDay; ?>">
                         <img src="img/add.png" title="Clique aqui pra uma inscrição rápida!">
@@ -308,7 +317,7 @@
                 <div class="edit">
                     <a id="chat_icon" href="javascript:void(0)" onclick="SwapDivsWithClick_1();">
                     <img class="clock" src="img/love.png" alt=""></a>
-                    <p>&nbsp;&nbsp;<?php echo getMuralNrMsg($conn, $row[14]) ?></p>
+                    <p><?php echo getMuralNrMsg($conn, $row[14]) ?></p>
                 </div>
                 
                 <div class="title"><p>Limite</p></div>                

@@ -606,10 +606,10 @@
         $row = mysqli_fetch_row($query);
 
         if ($row[0] != NULL) {
-            return "( $row[0] )";
+            return "($row[0])";
         }
         else{
-            return "( 0 )";
+            return "(0)";
         }
     }    
 

@@ -1,7 +1,7 @@
 
 body {
     font-family: 'Righteous', cursive;
-    font-size: 1.3em;
+    font-size: 1.2em;
     text-shadow: 1px 1px 1px grey;
 }
 
@@ -265,7 +265,7 @@ ul > li, ol > li{
 .title, .slot, .header_cell.header_cell, .day_cell, .hora, .edit , .join, .count, .ev_pend, .ev_conf, .ev_canc, .ev_real, .place, .table_cell, .icon-small {
     display: grid;
     justify-content: center;
-    align-items: center;er; */
+    align-items: center;
 }
 
 .edit{

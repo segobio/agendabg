@@ -18,8 +18,34 @@
 
     session_start();
 
-    $currMonth = $_SESSION['data_var_mes'];
-    $daysInMonth = $_SESSION["daysInMonth"];  
+    #------------------------------------------------------------------------------
+    #  INHERITING THE VALUES FROM SESSION VARIABLES
+    #------------------------------------------------------------------------------
+    $date_of_access_day = $_SESSION['date_of_access_day'];
+    $date_of_access_month = $_SESSION['date_of_access_month'];
+    $date_of_access_year = $_SESSION['date_of_access_year'];
+    $date_of_access_full = $_SESSION['date_of_access_full'];
+    $nr_of_days_in_game_month = $_SESSION["nr_of_days_in_game_month"];
+
+    #------------------------------------------------------------------------------
+    #  FIELD NAMES AND PLACEHOLDERS
+    #------------------------------------------------------------------------------
+    $month_name = date("F", mktime(0, 0, 0, $date_of_access_month, 1));
+
+    $game_main = "NOME DO JOGO";
+    $game_ph = "Diga o que quer jogar";
+    $day_main = "DIA";
+    $day_ph = "Dia de $month_name";
+    $hour_main = "HORÁRIO";
+    $hour_ph = "Início da partida";
+    $local_main = "LOCAL";
+    $local_ph = "Local da partida";
+    $closing_main = "FECHAMENTO DAS INSCRIÇÕES";
+    $closing_ph = "Padrão 12h";
+
+    #------------------------------------------------------------------------------
+    #  WHAT IS HAPPENING HERE???????
+    #------------------------------------------------------------------------------
 
     if( isset($_GET['id'])){        
         $id_jogo = $_GET["id"];   
@@ -28,6 +54,7 @@
     if( isset($_GET['new'])){
         $new = $_GET['new'];
     
+        # Se estou editando um evento existente, pego os dados do banco pra popular os campos
         if ( $new == 0) {  
             $sql = "SELECT * FROM tb_diadejogo WHERE id_jogo = $id_jogo";
             $query = mysqli_query($conn, $sql);
@@ -38,14 +65,14 @@
     if( isset($_GET['date']) && $new == 0){ # Index -> Looking at an existing entry
         $date = $_GET['date'];
         $arrayDate = explode('-', $date);
-        $currMonth = $arrayDate[1];
+        $date_of_access_month = $arrayDate[1];
         $currDay = $arrayDate[2];
     }
 
     if( isset($_GET['date']) && $new == 1 ){
         $date = $_GET['date'];        
         $arrayDate = explode('/', $date);
-        $currMonth = $arrayDate[1];
+        $date_of_access_month = $arrayDate[1];
     }else{
         $date = date('Y-m-d');
     }
@@ -81,8 +108,8 @@
         
         $sql = "DELETE FROM tb_diadejogo WHERE id_jogo = $id_jogo";
         if (mysqli_query($conn,$sql) === TRUE) {           
-            $currMonth = $_SESSION['currentMonth'];
-            header("Location: index.php?month=$currMonth");
+            //$date_of_access_month = $_SESSION['currentMonth'];
+            header("Location: index.php?month=$date_of_access_month");
         }
     }   
 
@@ -104,48 +131,20 @@
 
         # Testing if players are NULL
         if (isset($_POST['jogador1'])){ $jogador1 = $_POST['jogador1']; }else{ $jogador1 = NULL; }
-        if (isset($_POST['jogador2'])) { $jogador2 = $_POST['jogador2']; }else{ $jogador2 = NULL; }
-
-        if (isset($_POST['jogador3'])) {
-            $jogador3 = $_POST['jogador3'];
-        }else {
-            $jogador3 = NULL;
-        }
-
-        if (isset($_POST['jogador4'])) {
-            $jogador4 = $_POST['jogador4'];
-        }else {
-            $jogador4 = NULL;
-        }
-
-        if (isset($_POST['jogador5'])) {
-            $jogador5 = $_POST['jogador5'];
-        }else {
-            $jogador5 = NULL;
-        }
-
-        if (isset($_POST['jogador6'])) {
-            $jogador6 = $_POST['jogador6'];
-        }else {
-            $jogador6 = NULL;
-        }
-
-        if (isset($_POST['jogador7'])) {
-            $jogador7 = $_POST['jogador7'];
-        }else {
-            $jogador7 = NULL;
-        }
+        if (isset($_POST['jogador2'])){ $jogador2 = $_POST['jogador2']; }else{ $jogador2 = NULL; }
+        if (isset($_POST['jogador3'])){ $jogador3 = $_POST['jogador3']; }else {$jogador3 = NULL; }
+        if (isset($_POST['jogador4'])){ $jogador4 = $_POST['jogador4']; }else {$jogador4 = NULL; }
+        if (isset($_POST['jogador5'])){ $jogador5 = $_POST['jogador5']; }else {$jogador5 = NULL; }
+        if (isset($_POST['jogador6'])) {$jogador6 = $_POST['jogador6']; }else {$jogador6 = NULL; }
+        if (isset($_POST['jogador7'])) {$jogador7 = $_POST['jogador7']; }else {$jogador7 = NULL; }
        
-        $dia = $_POST['dia'];        
+        $day_edited = $_POST['dia'];        
         $local = $_POST['local'];
         $horario = $_POST['horario'];
         $slots = $_POST['slots'];
         #$minPlayers = $_POST['minPlayers'];
-        $close_hours = $_POST['close_hours'];        
-
-        $currentYear = $_SESSION['currentYear'];
-        $currentMonth = $_SESSION['currentMonth'];
-        $date = "$currentYear-$currentMonth-$dia";
+        $close_hours = $_POST['close_hours']; 
+        $date = "$date_of_access_year-$date_of_access_month-$day_edited";
 
         $sql= "UPDATE tb_diadejogo SET
 
@@ -169,8 +168,8 @@
         #   # Stopped sending CHANGE notifications - 17/07/2019
         #--------------------------------------------------------------------------------
         #   f_sendMail($conn, "edit", $id_jogo);        
-            $currMonth = $_SESSION['currentMonth'];
-            header("Location: index.php?month=$currMonth");
+            //$date_of_access_month = $_SESSION['currentMonth'];
+            header("Location: index.php?month=$date_of_access_month");
         }
     }
 ?>
@@ -181,7 +180,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>+Partida</title>  
+    <title>Criar Partida</title>  
     <meta name="viewport" content="width=device-width, initial-scale=1">    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -203,30 +202,30 @@
             #  DISPLAYING / CHANGING - EXISTING EVENT
             ################################################################################
             if ($new == 0){
-                $currentMonth = $_SESSION['currentMonth']; ?>	    
+                #$currentMonth = $_SESSION['currentMonth']; ?>	    
 
             <form class="contact100-form validate-form" _lpchecked="1" method="post">
 			
 				<span class="contact100-form-title">Editar Jogo</span>
 
 				<div class="wrap-input100 validate-input bg1">
-					<span class="label-input100">NOME DO JOGO</span>
-					<input class="input100" type="text" name="jogo" placeholder="Vai de que jogo?" value="<?php echo $row[0]; ?>" required>
+					<span class="label-input100"><?php echo $game_main ?></span>
+					<input class="input100" type="text" name="jogo" placeholder="<?php echo $game_ph ?>" value="<?php echo $row[0]; ?>" required>
 				</div>
 
 				<div class="wrap-input100 validate-input bg1 rs1-wrap-input100">
-					<span class="label-input100">DIA</span>
-					<input class="input100" type="number" name="dia" placeholder="Quando?" min="1" max="<?php echo $daysInMonth ?>" value="<?php echo $currDay; ?>" required>
+					<span class="label-input100"><?php echo $day_main ?></span>
+					<input class="input100" type="number" name="dia" placeholder="<?php echo $day_ph ?>" min="1" max="<?php echo $nr_of_days_in_game_month ?>" value="<?php echo $currDay; ?>" required>
 				</div>
 
                 <div class="wrap-input100 bg1 rs1-wrap-input100">
-					<span class="label-input100">HORÁRIO</span>
-					<input class="input100" type="text" name="horario" placeholder="Que horas?" value="<?php echo $row[10]; ?>" pattern="[0-9]{2}h[0-9]{2}" title="Utilize o formato ex: 13h00" required>
+					<span class="label-input100"><?php echo $hour_main ?></span>
+					<input class="input100" type="text" name="horario" placeholder="<?php echo $hour_ph ?>" value="<?php echo $row[10]; ?>" pattern="[0-9]{2}h[0-9]{2}" title="Utilize o formato ex: 13h00" required>
 				</div>
 
 				<div class="wrap-input100 bg1 rs1-wrap-input100">
-					<span class="label-input100">LOCAL</span>
-					<input class="input100" type="text" name="local" placeholder="Onde?" value="<?php echo $row[9]; ?>">
+					<span class="label-input100"><?php echo $local_main ?></span>
+					<input class="input100" type="text" name="local" placeholder="<?php echo $local_ph ?>" value="<?php echo $row[9]; ?>">
 				</div>
 
                 <div class="wrap-input100 bg1 rs1-wrap-input100">
@@ -235,8 +234,8 @@
 				</div>
 
                 <div class="wrap-input100 bg1 rs1-wrap-input100">
-    				<span class="label-input100">LIMITE P/ INSCRIÇÕES</span>
-				    <input class="input100" type="number" min="0" max="72" name="close_hours" placeholder="[ 12h padrão ]" value="<?php echo $row[13]; ?>">
+    				<span class="label-input100"><?php echo $closing_main ?></span>
+				    <input class="input100" type="number" min="0" max="72" name="close_hours" placeholder="<?php echo $closing_ph ?>" value="<?php echo $row[13]; ?>">
 				</div>
 
                 <?php
@@ -274,7 +273,7 @@
             </form>
 
             <div class="container-contact100-form-btn">
-                    <button class="contact100-form-btn" onclick="location.href='<?php echo 'index.php?year=$currYear&month=$currMonth&nav=0';?>"">
+                    <button class="contact100-form-btn" onclick="history.back()">
 					    <span>
                             Voltar
 					        <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
@@ -304,38 +303,38 @@
             #  CREATING NEW EVENT
             ################################################################################
 
-            if ($new == 1){
-                
+            if ($new == 1){                
                 # O que essa linha faz??
-                #$currentMonth = $_SESSION['currentMonth']; ?>
+                #$currentMonth = $_SESSION['currentMonth'];                
+            ?>
 
                 <form class="contact100-form validate-form" _lpchecked="1" method="post">
 
                     <span class="contact100-form-title">Novo Jogo</span>
 
 				    <div class="wrap-input100 validate-input bg1">
-    					<span class="label-input100">NOME DO JOGO</span>
-					    <input class="input100" type="text" name="jogo" placeholder="Vai de que jogo?" value="" required>
+    					<span class="label-input100"><?php echo $game_main ?></span>
+					    <input class="input100" type="text" name="jogo" placeholder="<?php echo $game_ph ?>" value="" required>
                     </div>
 
                     <div class="wrap-input100 validate-input bg1 rs1-wrap-input100">
-    					<span class="label-input100">DIA</span>
-					    <input class="input100" type="number" name="dia" placeholder="Quando?" min="1" max="<?php echo $daysInMonth ?>" value="" required>
+    					<span class="label-input100"><?php echo $day_main ?></span>
+					    <input class="input100" type="number" name="dia" placeholder="<?php echo $day_ph ?>" min="1" max="<?php echo $nr_of_days_in_game_month ?>" value="" required>
 				    </div>
 
                     <div class="wrap-input100 bg1 rs1-wrap-input100">
-    					<span class="label-input100">HORÁRIO</span>
-					    <input class="input100" type="text" name="horario" placeholder="Que horas?" value="" pattern="[0-9]{2}h[0-9]{2}" title="Utilize o formato ex: 13h00" required>
+    					<span class="label-input100"><?php echo $hour_main ?></span>
+					    <input class="input100" type="text" name="horario" placeholder="<?php echo $hour_ph ?>" value="" pattern="[0-9]{2}h[0-9]{2}" title="Utilize o formato ex: 13h00" required>
 				    </div>
 
 				    <div class="wrap-input100 bg1 rs1-wrap-input100">
-    					<span class="label-input100">LOCAL</span>
-					    <input class="input100" type="text" name="local" placeholder="Onde?" value="">
+    					<span class="label-input100"><?php echo $local_main ?></span>
+					    <input class="input100" type="text" name="local" placeholder="<?php echo $local_ph ?>" value="">
 				    </div>
 
                     <div class="wrap-input100 bg1 rs1-wrap-input100">
-    					<span class="label-input100">LIMITE P/ INSCRIÇÕES</span>
-					    <input class="input100" type="number" min="0" max="72" name="close_hours" placeholder="[ 12h padrão ]" value="">
+    					<span class="label-input100"><?php echo $closing_main ?></span>
+					    <input class="input100" type="number" min="0" max="72" name="close_hours" placeholder="<?php echo $closing_ph ?>" value="">
 				    </div>
                 
                     <div class="container-contact100-form-btn">
@@ -350,7 +349,7 @@
                 </form>                
                 
                 <div class="container-contact100-form-btn">
-                    <button class="contact100-form-btn" onclick="location.href='index.php?month=<?php echo $currentMonth ?>'">
+                    <button class="contact100-form-btn" onclick="location.href='index.php?month=<?php echo $date_of_access_month ?>'">
 					    <span>
                             Voltar
 					        <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>

@@ -18,28 +18,25 @@
 
     session_start();
 
+    #------------------------------------------------------------------------------
+    #  INHERITING THE VALUES FROM SESSION VARIABLES
+    #------------------------------------------------------------------------------
+    $date_of_access_day = $_SESSION['date_of_access_day'];
+    $date_of_access_month = $_SESSION['date_of_access_month'];
+    $date_of_access_year = $_SESSION['date_of_access_year'];
+    $date_of_access_full = $_SESSION['date_of_access_full'];
+    $nr_of_days_in_game_month = $_SESSION["nr_of_days_in_game_month"];
+
     #--------------------------------------------------------------------------------
     # I AM CREATING A BRAND NEW DATABASE ENTRY
     #--------------------------------------------------------------------------------
 
     # receber os dados postados do formulario original
-    if( isset($_POST['jogo'])) { $jogo = $_POST['jogo']; }
-    
-    if( isset($_POST['dia'])){
-        $_SESSION['dia'] = $_POST['dia'];
-    }
-    
-    if( isset($_POST['local'])){
-        $_SESSION['local'] = $_POST['local'];
-    }
-    
-    if( isset($_POST['horario'])){
-        $_SESSION['horario'] = $_POST['horario'];
-    }
-
-    if( isset($_POST['close_hours'])){
-        $_SESSION['close_hours'] = $_POST['close_hours'];
-    }
+    if( isset($_POST['jogo'])) {  $jogo = $_POST['jogo']; }    
+    if( isset($_POST['dia']))  {  $_SESSION['dia'] = $_POST['dia']; }    
+    if( isset($_POST['local'])){  $_SESSION['local'] = $_POST['local']; }    
+    if( isset($_POST['horario'])){$_SESSION['horario'] = $_POST['horario']; }
+    if( isset($_POST['close_hours'])){ $_SESSION['close_hours'] = $_POST['close_hours']; }
 
     #-------------------------------------------------------
     # Recebe definitivamente os dados e realiza o insert
@@ -48,10 +45,10 @@
 
         $jogo = $_POST['name'];
         $jogador1 = $user;        
-        $dia = $_SESSION['dia'];
+        $day_created = $_SESSION['dia'];
         $local = $_SESSION['local'];
         $horario = $_SESSION['horario'];        
-        $slots = $_POST['maxPlayers'];        
+        $slots = $_POST['maxPlayers'];
         $thumb = $_POST['thumb'];
 
         # Recebo ID pra inserir na tabela JOGO
@@ -65,9 +62,9 @@
         }
 
         # TRATAR O DIA RECEBIDO E TRANSFORMAR EM DATA        
-        $currentYear = $_SESSION['data_var_ano'];
-        $currentMonth = $_SESSION['data_var_mes'];
-        $date = "$currentYear-$currentMonth-$dia";
+        //$currentYear = $_SESSION['date_of_access_yepar'];
+        //$currentMonth = $_SESSION['data_var_mes'];
+        $date = "$date_of_access_year-$date_of_access_month-$day_created";
 
         $sql = "INSERT INTO tb_diadejogo (jogo, jogador1, data, local, hora, slots, minPlayers, close_hours, thumb, id_bgg)
         VALUES ( '$jogo', '$jogador1', '$date', '$local', '$horario', '$slots', '$minPlayers', '$close_hours', '$thumb', '$bgg_id')";        
@@ -106,7 +103,7 @@
     <link rel="icon" type="image/png" href="https://www.boardgamefinder.net/assets/images/favicon.ico" sizes="32x32">
     <title>Lista @GameCorner</title>
 </head>
-<body background=<?php echo wallpaper(); ?>>    
+<body class="<?php echo wallpaper();?>">  
 
 <div class="grid_container">    
 

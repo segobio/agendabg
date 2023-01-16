@@ -349,10 +349,7 @@
         #------------------------------------------------------------------------------------            
         # Se o $row_players for nulo, o evento ja aconteceu e os resultados são listados            
         #------------------------------------------------------------------------------------
-        }
-
-        ### Se a posição for 0 (zero), o jogo é cooperativo, não tem ranking (APENAS WINNERS E LOSERS)
-        else {
+        } else { ### Se a posição for 0 (zero), o jogo é cooperativo, não tem ranking (APENAS WINNERS E LOSERS)        
 
             $index = count($row_score);
             $matrix_index = 0;

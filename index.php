@@ -250,7 +250,7 @@ if (isset($_POST['btn'])) {
 
                 <div class="edit">
                     <a id="pod_icon" href="score.php?id=<?php echo $row[14]; ?>"><img src="img/podium.png" alt=""></a>
-                    <a id="edit_icon" href="cadastro.php?new=0&id=<?php echo $row[14]; ?>&date=<?php echo $fullCurrentDay; ?>"><img class="edit_img" src="img/edit.png" alt=""></a>
+                    <a id="edit_icon" href="cadastro.php?new=0&id=<?php echo $row[14]; ?>&date=<?php echo $date_of_game_row[3]; ?>"><img class="edit_img" src="img/edit.png" alt=""></a>
                 </div>
             </div>
 

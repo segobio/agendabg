@@ -21,39 +21,34 @@
     #------------------------------------------------------------------------------
     #  INHERITING THE VALUES FROM SESSION VARIABLES
     #------------------------------------------------------------------------------
-    $date_of_access_day = $_SESSION['date_of_access_day'];
-    $date_of_access_month = $_SESSION['date_of_access_month'];
-    $date_of_access_year = $_SESSION['date_of_access_year'];
-    $date_of_access_full = $_SESSION['date_of_access_full'];
-    $nr_of_days_in_game_month = $_SESSION["nr_of_days_in_game_month"];
+    $date_of_access = $_SESSION['date_of_access'];
+    $date_of_access[3] = $_SESSION['date_of_access'][0] . "-" . $_SESSION['date_of_access'][1] . "-" . $_SESSION['date_of_access'][2];
+    #$nr_of_days_in_game_month = $_SESSION["nr_of_days_in_game_month"];
 
-    #--------------------------------------------------------------------------------
-    # I AM CREATING A BRAND NEW DATABASE ENTRY
-    #--------------------------------------------------------------------------------
-
-    # receber os dados postados do formulario original
+    # NEED TO STORE THE FORM FROM CADASTRO IN SESSION VARS AS THIS PAGE NEED TO CALL ITSELF
     if( isset($_POST['jogo'])) {  $jogo = $_POST['jogo']; }    
-    if( isset($_POST['dia']))  {  $_SESSION['dia'] = $_POST['dia']; }    
-    if( isset($_POST['local'])){  $_SESSION['local'] = $_POST['local']; }    
+    if( isset($_POST['date']))  {  $_SESSION['date'] = $_POST['date']; }    
     if( isset($_POST['horario'])){$_SESSION['horario'] = $_POST['horario']; }
+    if( isset($_POST['local'])){  $_SESSION['local'] = $_POST['local']; }    
     if( isset($_POST['close_hours'])){ $_SESSION['close_hours'] = $_POST['close_hours']; }
-
+    
     #-------------------------------------------------------
-    # Recebe definitivamente os dados e realiza o insert
+    # THIS INSERT IS ACTIVATED FROM A POST OF THIS VERY PAGE
     #-------------------------------------------------------
     if(isset($_POST['btn_list'])) {
 
+        # ASSINGING THE VALUES THAT CAME FROM CADASTRO.PHP BEFORE
         $jogo = $_POST['name'];
         $jogador1 = $user;        
-        $day_created = $_SESSION['dia'];
+        $date = $_SESSION['date'];
         $local = $_SESSION['local'];
         $horario = $_SESSION['horario'];        
+        
+        # ASSIGINING THE VALUES FROM FIELDS ON THIS PAGE (NO NEED TO USE SESSION VARIABLES)
         $slots = $_POST['maxPlayers'];
         $thumb = $_POST['thumb'];
-
         # Recebo ID pra inserir na tabela JOGO
-        $bgg_id = $_POST['bggid'];
-        
+        $bgg_id = $_POST['bggid'];        
         $minPlayers = 3;
         #$minPlayers = $_POST['minPlayers'];
         $close_hours = $_SESSION['close_hours'];
@@ -64,7 +59,7 @@
         # TRATAR O DIA RECEBIDO E TRANSFORMAR EM DATA        
         //$currentYear = $_SESSION['date_of_access_yepar'];
         //$currentMonth = $_SESSION['data_var_mes'];
-        $date = "$date_of_access_year-$date_of_access_month-$day_created";
+        #$date = "$date_of_access_year-$date_of_access_month-$day_created";
 
         $sql = "INSERT INTO tb_diadejogo (jogo, jogador1, data, local, hora, slots, minPlayers, close_hours, thumb, id_bgg)
         VALUES ( '$jogo', '$jogador1', '$date', '$local', '$horario', '$slots', '$minPlayers', '$close_hours', '$thumb', '$bgg_id')";        
@@ -103,6 +98,7 @@
     <link rel="icon" type="image/png" href="https://www.boardgamefinder.net/assets/images/favicon.ico" sizes="32x32">
     <title>Lista @GameCorner</title>
 </head>
+
 <body class="<?php echo wallpaper();?>">  
 
 <div class="grid_container">    

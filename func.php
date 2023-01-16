@@ -231,7 +231,7 @@
         return $count;
     }
 
-    # Print STATUS area depending on number of players
+    # This function handles the event field "VAGAS" and "LIMITE"
     function f_status($gameDay, $nr_players, $minPlayers){
 
         $today = date("Y-m-d");
@@ -243,11 +243,13 @@
         # PAST EVENTS
         ##############################
 
-        if ( $gameDay < $today && $nr_players < $minPlayers) { # We ahead the date of game AND min users did not registered (ABORTED)
+        # We ahead the date of game AND min users did not registered (ABORTED)
+        if ( $gameDay < $today && $nr_players < $minPlayers) {
             echo "<div style='' class='ev_canc'><p>Cancelado</p></div>";                    
         }
 
-        else if ( $gameDay < $today && $nr_players >= $minPlayers ){ # Date of event is in the past and min users was reached (assumed realized)
+        # Date of event is in the past and min users was reached (assumed realized)
+        else if ( $gameDay < $today && $nr_players >= $minPlayers ){
             echo "<div style='' class='ev_real'><p>Realizado</p></div>";
         }
         
@@ -255,11 +257,13 @@
         # FUTURE EVENTS
         ##############################
         
-        else if ( $gameDay >= $today && $nr_players < $minPlayers) { # Time has not yet come but not enough players
+        # Time has not yet come but not enough players
+        else if ( $gameDay >= $today && $nr_players < $minPlayers) { 
             echo "<div style='' class='ev_pend'><p>Planejado</p></div>";
         }
                 
-        else if ( $gameDay >= $today && $nr_players >= $minPlayers ){ # Date of event has not yet come and min users was reached
+        # Date of event has not yet come and min users was reached
+        else if ( $gameDay >= $today && $nr_players >= $minPlayers ){
             echo "<div style='' class='ev_conf'><p>Confirmado</p></div>";
         #    echo "<div><img class='ev_conf' src='img/confirmed.png' style='width:125px'></div>";
         }

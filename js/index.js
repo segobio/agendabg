@@ -18,12 +18,12 @@
 
 $( document ).ready(function() {
 	
-	$(" .edit ").click(function() {
+	/*$(" .edit ").click(function() {
         console.log("hide original menu");
         $(this).parent().css('display','none');        
 		console.log("show chat feed");
         $(this).parent().next().css('display','grid');		
-    });
+    });    
 	
 	$(" .chat_ativo ").click(function() {		
 		
@@ -33,6 +33,7 @@ $( document ).ready(function() {
 		console.log("hide original menu");        
 		
     });
+    */
 
     function getTimerGame(){    
 

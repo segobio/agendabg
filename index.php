@@ -189,19 +189,24 @@ if (isset($_POST['btn'])) {
             $nr_slots_row = (int)$row[11] - (int)$nr_players_row;
             $nr_min_players_row = $row[12];
             $img_thumb_row = $row[15];
-            $score_row = NULL;
+            $array_scores_row = NULL;
             $hours_limit_row = $row[13];            
 
             ##---------------------------------------------------------------------------
             ## OLD GAME - !!!!!!!! NOT SURE ABOUT EVERYTHING THAT IT DOES
             ##---------------------------------------------------------------------------
+
+            # If the game is older than today AND there are scores logged for it
             if ($date_of_game_row[3] <= $date_of_access[3] && getRankedList($conn, $id_of_game_row) != NULL) {
-                $score_row = getRankedList($conn, $row[14]);
-                if (!is_array($score_row[0])) {
-                    $row_players = $score_row;
+
+                $array_scores_row = getRankedList($conn, $row[14]);
+
+                #What I did here?????
+                if (!is_array($array_scores_row[0])) {
+                    $list_players_row = $array_scores_row;
                 }
-                $row_players = NULL;
-                $nr_players_row = (count(array_filter($score_row)));
+                $list_players_row = NULL;
+                $nr_players_row = (count(array_filter($array_scores_row)));
             }
 
         ?>
@@ -212,9 +217,7 @@ if (isset($_POST['btn'])) {
                     <div class="day_cell">
                         <?php echo "$date_of_game_row[4] - $date_of_game_row[5]"; ?></div>
                     <div class="join">
-                        <a href="index.php?join=1&id=<?php echo $id_of_game_row; ?>&date=<?php echo $fullCurrentDay; ?>">
-                            <img src="img/add.png" title="Clique aqui pra uma inscrição rápida!">
-                        </a>
+                        <a href="index.php?join=1&id=<?php echo $id_of_game_row; ?>&date=<?php echo $date_of_access_row[3]; ?>"><img src="img/add.png" title="Clique aqui pra uma inscrição rápida!"></a>
                     </div>
                 </div>
 
@@ -224,7 +227,7 @@ if (isset($_POST['btn'])) {
                 <!--------------------------------- EVENT HEADER: ENROLLED PLAYERS ------------------------------->
                 <div class="title"><p>Jogam</p></div>                
                 <!-- Function f_printPlayer() prints both regular list and ranked list -->
-                <div class="players"><?php f_printPlayer($list_players_row, $score_row); ?></div>                
+                <div id="Players" class="players"><?php f_printPlayer($list_players_row, $array_scores_row); ?></div>                
                 <div class="icon"><img src="<?php echo $img_thumb_row ?>" alt=""></div>
                 <!--------------------------------- EVENT HEADER: LOCATION, TIME ------------------------------->
                 <div class="title"><p>Onde</p></div>

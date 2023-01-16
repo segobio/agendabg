@@ -107,11 +107,11 @@ $( document ).ready(function() {
            // Upper padlock
            if ( $(this).siblings(" .ev_conf ").text() != "Confirmado" || $(this).siblings(" .slot ").text().charAt(0) == 0 ) {
               var beforeLock = $(this).siblings().first().children().last().children().first()[0];
-              $(beforeLock).replaceWith("<img style='height: 40px' src='img/pad.png' />");
+              $(beforeLock).replaceWith("<img style='height: 30px' src='img/pad.png' />");
            }           
            
            // Lower padlock
-           $(this).siblings().last().html("<img style='height: 40px' src='img/pad.png' />");
+           $(this).siblings().last().html("<img style='height: 30px' src='img/pad.png' />");
        }  
        
        //debugger;
@@ -131,7 +131,7 @@ $( document ).ready(function() {
 
            // Upper padlock
            var beforeLock = $(this).siblings().first().children().last().children().first()[0];
-           $(beforeLock).replaceWith("<img style='height: 40px' src='img/pad.png' />");
+           $(beforeLock).replaceWith("<img style='height: 35px' src='img/pad.png' />");
            // Lower padlock
            // 19/09/19 -> O cadeano não aparece mais embaixo. Em vez disso, apenas removo o botão de edit...
            //$(this).siblings().last().html("<img style='height: 40px' src='img/pad.png' />");

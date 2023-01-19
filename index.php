@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 setlocale(LC_ALL, 'pt_BR');
 date_default_timezone_set('America/Sao_Paulo');
 header('Content-Type: text/html; charset=utf-8');
@@ -8,15 +10,14 @@ header('Content-Type: text/html; charset=utf-8');
 include 'db_con.php';
 include 'func.php';
 
-$user = "nobody";
-$mail = "empty";
-
-session_start();
+$user_logged = "nobody";
+#$mail = "empty";
 
 // write log about user action
 # writeLog($_COOKIE['user'], $_SERVER['REQUEST_URI']);
 
-if (isset($_POST['logoff']) && $_POST['logoff'] == 1) {
+#if (isset($_POST['logoff']) && $_POST['logoff'] == 1) {
+if (isset($_GET['logoff']) && $_GET['logoff'] == 1) {
     setcookie("user", "", time() - 3600, '/');
     setcookie("mail", "", time() - 3600, '/');
     setcookie("_ga", "", time() - 3600, '/');
@@ -25,9 +26,10 @@ if (isset($_POST['logoff']) && $_POST['logoff'] == 1) {
 }
 
 # If session cookies exist, retrieve values
-if (isset($_COOKIE['user']) && isset($_COOKIE['mail'])) {
-    $user = $_COOKIE['user'];
-    $mail = $_COOKIE['mail'];
+#if (isset($_COOKIE['user']) && isset($_COOKIE['mail'])) {
+if (isset($_COOKIE['user'])) {
+    $user_logged = $_COOKIE['user'];
+    #$mail = $_COOKIE['mail'];
 
     # If not, redirect to logon page
 } else {
@@ -84,12 +86,12 @@ if (isset($_POST['join']) && $_POST['join'] == 1) { # Player is quick-joining an
 
         if ($thisGameDay >= $today) { # if gameday is yet to come            
 
-            if (valSinglePlayer($conn, $eventID, $user)) { # If current player not yet assigned
+            if (valSinglePlayer($conn, $eventID, $user_logged)) { # If current player not yet assigned
 
                 $freeSlots--; # Decrease one as a new user has taken on free seat                    
-                $userList = getUserList($conn, $eventID);
+                $user_loggedList = getUserList($conn, $eventID);
 
-                $sql = "UPDATE tb_diadejogo SET $indexJogador = '$user' WHERE id_jogo = $eventID";
+                $sql = "UPDATE tb_diadejogo SET $indexJogador = '$user_logged' WHERE id_jogo = $eventID";
 
                 if ($conn->query($sql) === TRUE) {
                     header("Location: index.php");
@@ -109,7 +111,7 @@ if (isset($_POST['btn'])) {
     $ts_date = date("d/m/y");
     $ts_time = date("H:i:s");
     $msg = $_POST['msg'];
-    $sql = "INSERT INTO tb_chat (id_jogo, message, ts_date, ts_time, user) VALUES ('$eventID', '$msg', '$ts_date', '$ts_time', '$user')";
+    $sql = "INSERT INTO tb_chat (id_jogo, message, ts_date, ts_time, user) VALUES ('$eventID', '$msg', '$ts_date', '$ts_time', '$user_logged')";
     $tmp_month_10 = $_SESSION['currentMonth'];
     if ($conn->query($sql) === TRUE) {
         header("Location: index.php");
@@ -143,27 +145,25 @@ if (isset($_POST['btn'])) {
 
 <body class="<?php echo wallpaper(); ?>">
 
+    <div class="header_container border__shadow">
+        <div class="header_cell" id="upper_calen"> <a href="cadastro.php?new=1"><img class="icon-small" src="img/calend.png" alt=""></a> </div>
+        <div class="header_cell" id="upper_togl">
+            <!-- Rounded switch -->
+            <label class="switch">
+                <input type="checkbox" id="toggle_events">
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <div class="header_cell" id="upper_rank"><a href="ranking.php?coop=0"><img class="icon-small" src="img/podium.png" alt=""></a></div>
+        <div class="header_cell" id="upper_set"><a href="#"><img class="icon-small" src="img/settings.png" alt=""></a></div>
+        <div class="header_cell" id="upper_log"><a href="index.php?logoff=1"><img class="icon-small" src="img/logout.png" alt=""></a></div>
+
+    </div>
+
     <div class="container"> <!--- MAIN CCS GRID CONTAINER --->
 
-        <!--------------------------------------------------------------------
-    BLOCK WITH [ MONTH / YEAR ] DETAILS
-    --------------------------------------------------------------------->
 
-        <div class="header_container border__shadow">
-            <div class="header_cell" id="upper_calen"> <a href="cadastro.php?new=1"><img class="icon-small" src="img/calend.png" alt=""></a> </div>
-            <div class="header_cell" id="upper_togl">
-                <!-- Rounded switch -->
-                <label class="switch">
-                    <input type="checkbox" id="toggle_events">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-
-            <div class="header_cell" id="upper_rank"><a href="ranking.php?coop=0"><img class="icon-small" src="img/podium.png" alt=""></a></div>
-            <div class="header_cell" id="upper_set"><a href="#"><img class="icon-small" src="img/settings.png" alt=""></a></div>
-            <div class="header_cell" id="upper_log"><a href="index.php?logoff=1"><img class="icon-small" src="img/logout.png" alt=""></a></div>
-
-        </div>
 
         <?php
 
@@ -190,7 +190,7 @@ if (isset($_POST['btn'])) {
             $nr_min_players_row = $row[12];
             $img_thumb_row = $row[15];
             $array_scores_row = NULL;
-            $hours_limit_row = $row[13];            
+            $hours_limit_row = $row[13];
 
             ##---------------------------------------------------------------------------
             ## OLD GAME - !!!!!!!! NOT SURE ABOUT EVERYTHING THAT IT DOES
@@ -207,7 +207,7 @@ if (isset($_POST['btn'])) {
                 }
                 $list_players_row = NULL;
                 $nr_players_row = (count(array_filter($array_scores_row)));
-            }
+            }           
 
         ?>
 
@@ -221,31 +221,47 @@ if (isset($_POST['btn'])) {
                     </div>
                 </div>
 
-                <!--------------------------------- EVENT HEADER: GAME NAME ------------------------------->                
-                <div class="title"><p>Jogo</p></div>
-                <div class="jogo"><p><?php echo $name_of_game_row; ?></p></div>
+                <!--------------------------------- EVENT HEADER: GAME NAME ------------------------------->
+                <div class="title">
+                    <p>Jogo</p>
+                </div>
+                <div class="jogo">
+                    <p><?php echo $name_of_game_row; ?></p>
+                </div>
                 <!--------------------------------- EVENT HEADER: ENROLLED PLAYERS ------------------------------->
-                <div class="title"><p>Jogam</p></div>                
+                <div class="title">
+                    <p>Jogam</p>
+                </div>
                 <!-- Function f_printPlayer() prints both regular list and ranked list -->
-                <div id="Players" class="players"><?php f_printPlayer($list_players_row, $array_scores_row); ?></div>                
+                <div id="Players" class="players"><?php f_printPlayer($conn, $list_players_row, $array_scores_row); ?></div>
                 <div class="icon"><img src="<?php echo $img_thumb_row ?>" alt=""></div>
                 <!--------------------------------- EVENT HEADER: LOCATION, TIME ------------------------------->
-                <div class="title"><p>Onde</p></div>
+                <div class="title">
+                    <p>Onde</p>
+                </div>
                 <div class="place_hour_container">
-                    <div class="place"><p><?php echo $place_of_game_row; ?></p></div>
+                    <div class="place">
+                        <p><?php echo $place_of_game_row; ?></p>
+                    </div>
                     <div class="hora"><?php echo $time_of_game_row; ?></span></div>
                 </div>
                 <!--------------------------------- EVENT HEADER: GAME STATUS ------------------------------->
                 <?php f_status($date_of_game_row[3], $nr_players_row, $nr_min_players_row); ?>
                 <!--------------------------------- EVENT HEADER: SLOTS, CHAT ------------------------------->
-                <div class="title"><p>Vagas</p></div>
-                <div class="slot" gamedate=""><p><?php echo "$nr_slots_row / $row[11]"; ?></p></div>
+                <div class="title">
+                    <p>Vagas</p>
+                </div>
+                <div class="slot" gamedate="">
+                    <p><?php echo "$nr_slots_row / $row[11]"; ?></p>
+                </div>
                 <div class="edit">
                     <a id="chat_icon" href="javascript:void(0)" onclick="SwapDivsWithClick_1();"><img class="clock" src="img/love.png" alt=""></a>
                     <p><?php echo getMuralNrMsg($conn, $row[14]) ?></p>
                 </div>
                 <!--------------------------------- EVENT HEADER: COUNTDOWN, SCORE, CONFIG ------------------------------->
-                <div class="title"><p>Limite</p></div>
+                <div class="title">
+                    <p>Limite</p>
+                </div>
                 <div class="count" gamehour="<?php echo calcHour($conn, $id_of_game_row, $hours_limit_row); ?>" gamedate="<?php echo $date_of_game_row[3]; ?>"></div>
 
                 <div class="edit">

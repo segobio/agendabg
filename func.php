@@ -6,20 +6,32 @@ include 'db_con.php';
 #------------------------------------------------------------------------------
 # INITIALIZE PHP MAILER
 #------------------------------------------------------------------------------
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-
 require("phpmailer/PHPMailer.php");
 require("phpmailer/SMTP.php");
 
-#--------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------
 # GLOBALS / CONSTANTS
-#--------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------
+
 $maxNrPlayers = 7;
 
-# Return number of free slots
+#--------------------------------------------------------------------------------------------------------
+# Function that returns player picture.... ??????????
+#--------------------------------------------------------------------------------------------------------
+function f_query($conn, $sql)
+{
+    $inner_sql = $sql;
+    $query = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_row($query);
+    return $row;
+}
+
+#--------------------------------------------------------------------------------------------------------
+# Function that returns the number of free slots for a game
+#--------------------------------------------------------------------------------------------------------
 function getFreeSlots($conn, $eventId)
 {
 
@@ -66,7 +78,11 @@ function getMaxSlots($conn, $eventId)
     return $maxSlots;
 }
 
-# Encontra USER ID do Nome do usuario
+#--------------------------------------------------------------------------------------------------------
+# Function that returns player ID
+# Input: Connection object, username
+# Output: User ID (int) 
+#--------------------------------------------------------------------------------------------------------
 function getUserId($conn, $userName)
 {
     $sql = "SELECT user_id FROM tb_users WHERE user = '$userName'";
@@ -238,7 +254,10 @@ function getNextSlot($conn, $eventId)
     return $count;
 }
 
-# This function handles the event field "VAGAS" and "LIMITE"
+
+#--------------------------------------------------------------------------------------------------------
+# Function handles the event field "VAGAS" and "LIMITE"
+#--------------------------------------------------------------------------------------------------------
 function f_status($gameDay, $nr_players, $minPlayers)
 {
 
@@ -297,7 +316,10 @@ function calcHour($conn, $eventId, $orig_hour)
     return $test_hour;
 }
 
+
+#--------------------------------------------------------------------------------------------------------
 # RETURN ARRAY OF REGISTERED USERS TO A GIVEN EVENT
+#--------------------------------------------------------------------------------------------------------
 function getUserList($conn, $eventID)
 {
 
@@ -337,40 +359,75 @@ function getRankedList($conn, $eventID)
     }
 }
 
-# LIST THE PLAYERS LINKED TO THE EVENT.
-#   - IF THE EVENT IS IN THE FUTURE, LIST THE PULSATING AVATAR PICS
-#   - IF THE EVENT IS IN THE PAST, LIST NAMES, MEDALS AND SCORES
-function f_printPlayer($row_players, $row_score)
+/*
+function setUserPic($conn, $user)
 {
-    $p = 1;
-    #------------------------------------------------------------------------------------            
-    # Se o $row_players não for nulo, o evento é futuro e será listado normalmente            
-    #------------------------------------------------------------------------------------
+    $sql = "UPDATE tb_users set user_pic "
+    $user_pic = f_query($conn, "SELECT user_pic FROM tb_users WHERE user = $user");
+
+    
+    
+    
+    $sql = "SELECT tb_users.user, tb_score_player.score, tb_score_player.coloc, tb_score_player.victory FROM tb_users, tb_score_player WHERE tb_score_player.score_id = $eventID AND tb_score_player.user_id = tb_users.user_id ORDER BY coloc ASC, victory DESC";
+    $query = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_row($query);
+
+    # Agora eu tenho que receber toda a linha (todo o array) e não apenas uma posição do array
+    for ($i = 0; $i < 8; $i++) {
+        if (!empty($row)) {
+            $regUsers[] = $row;
+            $row = mysqli_fetch_row($query);
+        } else {
+            break;
+        }
+    }
+    if (isset($regUsers)) {
+        return $regUsers;
+    }
+}
+*/
+
+##-------------------------------------------------------------------------------------------------------
+## LIST THE PLAYERS WHO PLEDGED TO PLAY OR, IF IN THE PAST, THEIR SCORING
+##-------------------------------------------------------------------------------------------------------
+##
+## - This function is called at every loop of the main FOR (1 for every event)
+##
+##-------------------------------------------------------------------------------------------------------
+function f_printPlayer($conn, $row_players, $row_score)
+{
+    $p = 1;    
+    # Se o $row_players não for nulo, o evento é futuro e será listado normalmente                
     if ($row_players != NULL) {
-        $index = count($row_players);
-        for ($j = 0; $j < $index; $j++) {
-            if ($row_players[$j] != NULL) {
-                //echo "<li class='listplayer'><img class='img_nr_list' src='img/nu$p.png'><span class='player'>$row_players[$j]</li>";
-                //echo "<img src='img/$row_players[$j].jpg' title='$row_players[$j]'>";
-                //echo `<img src='img/$row_players[$j].jpg' onerror='this.onerror=null; this.src=img/anon.png' title='$row_players[$j]'>`;
-                //echo `<img src="img/$row_players[$j].jpg" onerror="this.onerror=null; this.src='img/anon.png' title='$row_players[$j]'">`;
-                echo "<picture><source srcset='img/$row_players[$j].jpg'/><img src='img/anon.png' alt='anon'/></picture>";
+        #$index = count($row_players);
+
+        #for ($j = 0; $j < $index; $j++) {
+        foreach($row_players as $value) {            
+
+            if ($value != NULL) { #As long as there is an user left to list
+                $loop_pic = f_query($conn, "SELECT user_pic FROM tb_users WHERE user = '$value'");
+                echo "<img src='$loop_pic[0]' alt='anon'/>";
                 $p++;
+
             } else {
                 break;
             }
         }
-        #------------------------------------------------------------------------------------            
-        # Se o $row_players for nulo, o evento ja aconteceu e os resultados são listados            
-        #------------------------------------------------------------------------------------
-    } else { ### Se a posição for 0 (zero), o jogo é cooperativo, não tem ranking (APENAS WINNERS E LOSERS)        
+
+    # Se o $row_players for nulo, o evento ja aconteceu e os resultados são listados    
+    }
+    else
+    {
 
         $index = count($row_score);
         $matrix_index = 0;
 
-        if ($row_score[$matrix_index][1] == 0 & $row_score[$matrix_index][2] == 0)
-        {   
+        # Se a posição for 0 (zero), o jogo é cooperativo, não tem ranking (APENAS WINNERS E LOSERS)        
+        if ($row_score[$matrix_index][1] == 0 & $row_score[$matrix_index][2] == 0) {
+            
+            #----------------------------------
             # COOPERATIVO
+            #----------------------------------
             for ($i = 0; $i < $index; $i++) {
 
                 $user = $row_score[$i][0];
@@ -385,8 +442,11 @@ function f_printPlayer($row_players, $row_score)
                 }
                 $matrix_index++;
             }
-        } else { 
+        } else {
+
+            #----------------------------------
             # COMPETITIVO
+            #----------------------------------            
             #$index = count($row_score);
             for ($i = 0; $i < $index; $i++) {
 
@@ -435,7 +495,9 @@ function countAllUsers($conn)
     return $row[0];
 }
 
-# PRIMEIRA PARTIDA DE CADA JOGO, CRIA ENTRADA NA TABELA JOGO
+#--------------------------------------------------------------------------------------------------------
+# VERY FIRST MATCH OF EACH GAME - CREATES AN ENTRY AT THE TABLE "JOGO"
+#--------------------------------------------------------------------------------------------------------
 function f_insereTabelaJogo($conn, $bgg_id, $jogo)
 {
 
@@ -489,7 +551,9 @@ function f_updateRecord($conn, $eventID, $tmp_record_score, $tmp_record_user_id)
     }
 }
 
-# ENVIAR E-MAIL
+#--------------------------------------------------------------------------------------------------------
+# EMAIL NOTIFICATION
+#--------------------------------------------------------------------------------------------------------
 function f_sendMail($conn, $type, $id, $userList)
 {
 
@@ -506,11 +570,8 @@ function f_sendMail($conn, $type, $id, $userList)
     $mail->Password = "01argonia10";
     $mail->CharSet = 'UTF-8';
     #$mail->SMTPDebug = 2;
-
-    # ------------------------------------------------------
-    # With the event ID, SELECT in the database
-    # ------------------------------------------------------
-
+    
+    # With the event ID, SELECT in the database    
     $sql = "SELECT * FROM tb_diadejogo WHERE id_jogo = $id";
     $query = mysqli_query($conn, $sql);
     $row = array_filter(mysqli_fetch_row($query));
@@ -558,10 +619,7 @@ function f_sendMail($conn, $type, $id, $userList)
         #$img_html = "<br><a href='https://agendabg.000webhostapp.com/index.php?join=1&id=$id&date=$date'><img style='float:left' height='140' width='600' src='https://agendabg.000webhostapp.com/img/join.png'>";
     }
 
-    # ------------------------------------------------------
     # Assign the content to the $mail object
-    # ------------------------------------------------------
-
     $mail->Subject = $subject;
     $mail->Body = "
         <html>
@@ -641,6 +699,7 @@ function writeLog($user, $script)
     */
 }
 
+/*
 function prev_Month()
 {
 
@@ -667,3 +726,4 @@ function next_Month()
     //return $temp_url;
     header("Location: $temp_url");
 }
+*/

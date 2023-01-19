@@ -200,7 +200,8 @@ if (isset($_POST['btn']) && $new == 0) {
         #--------------------------------------------------------------------------------
         #   f_sendMail($conn, "edit", $id_jogo);        
         //$date_of_access_month = $_SESSION['currentMonth'];
-        header("Location: index.php?month=$date_of_access_month");
+        #header("Location: index.php?month=$date_of_access_month");
+        header("Location: index.php");
     }
 }
 ?>

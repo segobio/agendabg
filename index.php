@@ -135,7 +135,7 @@ if (isset($_POST['btn'])) {
     <!-- END FONTS -->
     <link rel="stylesheet" type="text/css" media="screen" href="css/index.css">
     <link rel="stylesheet" type="text/css" media="screen" href="css/flip-card.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/glitch.css">
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="css/glitch.css">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/persistent-checkboxes.js"></script>
     <script src="js/index.js"></script>
@@ -234,7 +234,7 @@ if (isset($_POST['btn'])) {
                 </div>
                 <!-- Function f_printPlayer() prints both regular list and ranked list -->
                 <div id="Players" class="players"><?php f_printPlayer($conn, $list_players_row, $array_scores_row); ?></div>
-                <div class="icon"><img src="<?php echo $img_thumb_row ?>" alt=""></div>
+                <div class="game_thumb "><img src="<?php echo $img_thumb_row ?>" alt=""></div>
                 <!--------------------------------- EVENT HEADER: LOCATION, TIME ------------------------------->
                 <div class="title">
                     <p>Onde</p>

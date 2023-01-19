@@ -406,7 +406,10 @@ function f_printPlayer($conn, $row_players, $row_score)
 
             if ($value != NULL) { #As long as there is an user left to list
                 $loop_pic = f_query($conn, "SELECT user_pic FROM tb_users WHERE user = '$value'");
-                echo "<img src='$loop_pic[0]' alt='anon'/>";
+                echo "<div class='image-container'>
+                        <img src='$loop_pic[0]'/>
+                        <p class='image-caption'>$value</p>
+                      </div>";
                 $p++;
 
             } else {

@@ -1,0 +1,11 @@
+
+BUGS:
+
+- Undefined index dentro da pagina de cadastro -> http://localhost/agendabg/cadastro.php?new=0&id=140&date=2023-1-14
+	Notice: Undefined index: currentMonth in C:\wamp64\www\agendabg\cadastro.php on line 206
+	
+- Agora eu consigo editar e adicionar um novo usuário mas o jogo que era em FEVEREIRO mudou pra Janeiro
+- Adicionar ajuda para os campos de criação de evento (especialmente pra fechamento das inscrições)
+- transformar os dois formularios (CRIAÇÃO E EDIÇÃO) em um so e apenas esconder os campos com JS
+- habilitar a atualização da thumb e outros dados quando um jogo é trocado em um evento existente
+

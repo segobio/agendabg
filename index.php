@@ -69,11 +69,11 @@ if ($row !== NULL) {
 # HANDLING THE "QUICKJOIN" EVENT
 #---------------------------------------------------------------------------
 
-if (isset($_POST['join']) && $_POST['join'] == 1) { # Player is quick-joining an event 
+if (isset($_GET['join']) && $_GET['join'] == 1) { # Player is quick-joining an event 
 
-    $eventID = $_POST['id'];
-    $today = date("Y-m-d");
-    $thisGameDay = date("Y-m-d", strtotime($_POST['date'])); # Converting string -> date in specific format
+    $eventID = $_GET['id'];
+    $QJ_today = date("Y-m-d");
+    $QJ_game_day = date("Y-m-d", strtotime($_GET['date'])); # Converting string -> date in specific format
 
     $freeSlots = getFreeSlots($conn, $eventID);
     $maxlots = getMaxSlots($conn, $eventID);
@@ -84,7 +84,7 @@ if (isset($_POST['join']) && $_POST['join'] == 1) { # Player is quick-joining an
 
     if ($freeSlots > 0) { # confirmar se tem espaco livre
 
-        if ($thisGameDay >= $today) { # if gameday is yet to come            
+        if ($QJ_game_day >= $QJ_today) { # if gameday is yet to come            
 
             if (valSinglePlayer($conn, $eventID, $user_logged)) { # If current player not yet assigned
 
@@ -217,7 +217,7 @@ if (isset($_POST['btn'])) {
                     <div class="day_cell">
                         <?php echo "$date_of_game_row[4] - $date_of_game_row[5]"; ?></div>
                     <div class="join">
-                        <a href="index.php?join=1&id=<?php echo $id_of_game_row; ?>&date=<?php echo $date_of_access_row[3]; ?>"><img src="img/add.png" title="Clique aqui pra uma inscrição rápida!"></a>
+                        <a href="index.php?join=1&id=<?php echo $id_of_game_row; ?>&date=<?php echo $date_of_access[3]; ?>"><img src="img/add.png" title="Inscrição rápida!"></a>
                     </div>
                 </div>
 

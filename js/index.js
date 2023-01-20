@@ -143,19 +143,17 @@ $(document).ready(function () {
         });
     }
 
-    //debugger;
-
-    function handleSlots() {
+    function handleSlots() {        
 
         $(".slot").each(function (index, value) {
 
             var text = $(this).text();
-            var slots = text.charAt(0);
+            var slots = $(this).find("p").text().charAt(0);
             var status = $(this).siblings(".count").text();
-            //console.log(status);
+            //console.log(status);            
 
             if (slots == 1 && status != "Finalizado") {
-                $(this).css({
+                $(this).css({                    
                     'color': 'white',
                     'text-shadow': '1px 1px 1px black',
                     'background': 'khaki'

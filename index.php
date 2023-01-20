@@ -146,13 +146,12 @@ if (isset($_POST['btn'])) {
 <body class="<?php echo wallpaper(); ?>">
 
     <div class="header_container border__shadow">
-        <div class="header_cell" id="upper_calen"> <a href="cadastro.php?new=1"><img class="icon-small" src="img/calend.png" alt=""></a> </div>
+        <!--<div class="header_cell upper_user"><div><img src="img/ianzito.jpg"/></div><div id="upper_user"><p>Ianzito</p></div></div> -->
+        <div class="header_cell upper_user"><img src="img/ianzito.jpg"/></div>
+        <div class="header_cell" id="upper_calen"><a href="cadastro.php?new=1"><img class="icon-small" src="img/calend.png" alt=""></a></div>
         <div class="header_cell" id="upper_togl">
             <!-- Rounded switch -->
-            <label class="switch">
-                <input type="checkbox" id="toggle_events">
-                <span class="slider round"></span>
-            </label>
+            <label class="switch"><input type="checkbox" id="toggle_events"><span class="slider round"></span></label>
         </div>
 
         <div class="header_cell" id="upper_rank"><a href="ranking.php?coop=0"><img class="icon-small" src="img/podium.png" alt=""></a></div>

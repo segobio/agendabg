@@ -162,8 +162,6 @@ if (isset($_POST['btn'])) {
 
     <div class="container"> <!--- MAIN CCS GRID CONTAINER --->
 
-
-
         <?php
 
         ##---------------------------------------------------------------------------

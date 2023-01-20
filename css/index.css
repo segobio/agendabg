@@ -480,15 +480,15 @@ ul > li, ol > li{
   }
 
 .game_thumb img{
-    max-width: 200px;
-    border-radius: 5px;
+    width: -webkit-fill-available;
     height: -webkit-fill-available;
+    border-radius: 5px;
+    box-shadow: darkgrey 2px 2px 4px 2px;
   }
 
-  .game_thumb:after {
-    
+  .game_thumb:after { 
     animation: shine 5s ease-in-out  infinite;
-    animation-fill-mode: forwards;  
+    animation-fill-mode: forwards;
     content: "";
     position: absolute;
     top: -110%;
@@ -497,7 +497,6 @@ ul > li, ol > li{
     height: 200%;
     opacity: 0;
     transform: rotate(30deg);
-    
     background: rgba(255, 255, 255, 0.13);
     background: linear-gradient(
       to right, 
@@ -640,10 +639,14 @@ ul > li, ol > li{
     }
 
     .cell {
-    grid-template-columns: 15% 45% 40%;
+    grid-template-columns: 15% 47% 37%;
     grid-gap: 0.1em;
     margin-bottom: 1em;
     }
+
+    .players-2 {grid-template-columns: 1fr;grid-template-rows: 1fr 1fr;}
+    .players-6 {grid-template-columns: 1fr 1fr;grid-template-rows: 1fr 1fr 1fr;}
+    .players-8 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr 1fr; }
 
     .chat_cell{
     min-height: 408.5px;
@@ -682,7 +685,7 @@ ul > li, ol > li{
         padding: 0px;
         border-radius: 5px;
         max-width: 135px;
-        /* box-shadow: darkgrey 2px 2px 4px 2px; */
+        box-shadow: darkgrey 2px 2px 4px 2px;
     }
     
 }

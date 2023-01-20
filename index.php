@@ -185,6 +185,7 @@ if (isset($_POST['btn'])) {
             $time_of_game_row = $row[10]; #Time of the game
             $list_players_row = getUserList($conn, $row[14]); #ARRAY with the list of players for current game
             $nr_players_row = (count(array_filter($list_players_row)));
+            $nr_slots_max_row = (int)$row[11];
             $nr_slots_row = (int)$row[11] - (int)$nr_players_row;
             $nr_min_players_row = $row[12];
             $img_thumb_row = $row[15];
@@ -232,7 +233,7 @@ if (isset($_POST['btn'])) {
                     <p>Jogam</p>
                 </div>
                 <!-- Function f_printPlayer() prints both regular list and ranked list -->
-                <div id="Players" class="players"><?php f_printPlayer($conn, $list_players_row, $array_scores_row); ?></div>
+                <div id="Players" class="<?php echo f_getPlayersClass($nr_players_row); ?>"><?php f_printPlayer($conn, $list_players_row, $array_scores_row); ?></div>
                 <div class="game_thumb "><img src="<?php echo $img_thumb_row ?>" alt=""></div>
                 <!--------------------------------- EVENT HEADER: LOCATION, TIME ------------------------------->
                 <div class="title">

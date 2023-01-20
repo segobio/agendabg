@@ -387,6 +387,21 @@ function setUserPic($conn, $user)
 }
 */
 
+function f_getPlayersClass($nr_slots_taken){
+    
+    $class = "players-2";
+
+    if ($nr_slots_taken > 6) {
+        $class = "players-8";
+    }elseif ($nr_slots_taken > 4) {
+        $class = "players-6";
+    }elseif ($nr_slots_taken > 2) {
+        $class = "players-4";
+    }
+    
+    return $class;
+}
+
 ##-------------------------------------------------------------------------------------------------------
 ## LIST THE PLAYERS WHO PLEDGED TO PLAY OR, IF IN THE PAST, THEIR SCORING
 ##-------------------------------------------------------------------------------------------------------
@@ -455,7 +470,7 @@ function f_printPlayer($conn, $row_players, $row_score)
 
                 #echo '<script>document.getElementById("Players").className = "'.$newClass.'";</script>';
                 #echo '<script> $("#Players").removeClass().addClass("'.$newClass.'"); </script>';
-                echo '<script> $("#Players").removeClass().addClass("players_ranking"); </script>';
+                echo '<script> $("#Players").removeClass().addClass("players-ranking"); </script>';
 
                 $user = $row_score[$i][0];
                 $score = $row_score[$i][1];

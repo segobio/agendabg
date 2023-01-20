@@ -25,7 +25,7 @@ ul > li, ol > li{
 /* --------- CONTAINERS ---------------------------------------- */
 
 .container {
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr) );
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr) );
     display: grid;
     /* the following value was commented, making the event look overly compressed in a screen > full hd*/
     grid-row-gap: 1em;
@@ -65,18 +65,17 @@ ul > li, ol > li{
     color: white;
 }
 
-.upper_user img{ width: 40px;}
+.upper_user img{ width: 40px; }
 
 /* --------- CELLS ---------------------------------------- */
 
 .cell {
-    grid-template-columns: 0.23fr 1fr 0.4fr;
     display: grid;
-    /* grid-template-columns: minmax(2.5em, 5em) minmax(2.5em, 1fr) minmax(1em, 8em); */
+    grid-template-columns: 0.3fr 1.5fr 1fr;
     /*
     grid-template-columns: repeat(auto-fill);
     */
-    grid-template-rows: auto auto 200px auto auto auto;
+    grid-template-rows: auto auto auto auto auto auto;
     grid-gap: 0.1em;
     box-shadow: 3px 3px 3px rgb(58 53 53);
     background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
@@ -155,11 +154,8 @@ ul > li, ol > li{
     display: flex;
     align-items: center;
 }
-
-.player{
-    margin-left:0.5em;
-}
 */
+
 
 .place_hour_container{
     display: grid;
@@ -264,7 +260,7 @@ ul > li, ol > li{
     align-items: center;
 }
 
-.jogo, .players, .players_ranking, .place, .hora, .slot, .edit, .count, .ev_pend, .ev_conf, .ev_canc, .ev_real, .game_thumb, .day_cell, .join{
+.jogo, *[class^='players-'], .place, .hora, .slot, .edit, .count, .ev_pend, .ev_conf, .ev_canc, .ev_real, .game_thumb, .day_cell, .join{
     box-shadow: 0.6px 0.6px 0.6px darkgray;
     border-radius: 0px 5px 15px 0px;
 }
@@ -278,14 +274,30 @@ ul > li, ol > li{
     padding-right: 0.4em;
 }
 /* Accomodates the names and/or photos of players that joined the event */
-.players {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    grid-auto-flow: column;
-    padding: 0.3em;
-    grid-gap: 0.3em;
-    /* box-sizing: border-box; */
+.players-2, .players-4, .players-6, .players-8
+{
+  display: grid;
+  grid-auto-flow: column;
+  padding: 0.3em;
+  grid-gap: 0.3em;
+  box-sizing: border-box;
+  /* justify-items: center; */
+}
+
+.players-4, .players-2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.players-6 {grid-template-columns: 1fr 1fr 1fr;grid-template-rows: 1fr 1fr;}
+.players-8 { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+*[class^='players-'] img
+{
+  width: -webkit-fill-available;
+  height: calc(100px - 0.6em);
+  border-radius: 5px;
+  box-shadow: 0.12em 0.12em 0.12em darkgrey;
+  border: 0.1em solid dimgray;
+  animation: pulse 1s infinite;
+  /* clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%); */
+  box-sizing: border-box;
 }
 
 .players_ranking {
@@ -309,18 +321,6 @@ ul > li, ol > li{
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
   }
-  
-
-  .players img {
-    width: -webkit-fill-available;
-    height: calc(100px - 0.6em);
-    border-radius: 5px;
-    box-shadow: 0.12em 0.12em 0.12em darkgrey;
-    border: 0.1em solid dimgray;
-    animation: pulse 1s infinite;
-    /* clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%); */
-    box-sizing: border-box;
-}
 
 .player-img-fallback {
     /* this URL here is theoretically a local one (always reachable) */
@@ -473,16 +473,16 @@ ul > li, ol > li{
 .game_thumb {
     position: relative;
     overflow: hidden;
-    display: flex;
+    display: grid;
     justify-content: center;
     align-items: center;
-    padding: 0.2em;
+    padding: 0.5em;
   }
 
 .game_thumb img{
-    max-width: 150px;
-    height: auto;
+    max-width: 200px;
     border-radius: 5px;
+    height: -webkit-fill-available;
   }
 
   .game_thumb:after {

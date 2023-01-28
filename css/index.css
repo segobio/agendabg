@@ -903,8 +903,10 @@ border: 0.1em solid dimgray;
 }
 
 .game_thumb img{
+  /*
   width: -webkit-fill-available;
   height: -webkit-fill-available;
+  */
   border-radius: 5px;
   -webkit-box-shadow: darkgrey 2px 2px 4px 2px;
           box-shadow: darkgrey 2px 2px 4px 2px;

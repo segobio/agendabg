@@ -60,6 +60,7 @@ if (isset($_POST['submit'])) {
   <!--<link rel="stylesheet" type="text/css" media="screen" href="css/register.css">-->
   <link rel="stylesheet" type="text/css" href="css/main.css">
   <link rel="icon" type="image/png" href="https://www.boardgamefinder.net/assets/images/favicon.ico" sizes="32x32">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body class="<?php echo wallpaper(); ?>">

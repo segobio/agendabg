@@ -43,8 +43,8 @@ $hour_main = "HORÁRIO";
 $hour_ph = "Início da partida";
 $local_main = "LOCAL";
 $local_ph = "Local da partida";
-$closing_main = "FECHAMENTO DAS INSCRIÇÕES";
-$closing_ph = "Padrão 12h";
+$closing_main = "Fecha inscrições";
+$closing_ph = "Default 1 hora antes";
 
 #------------------------------------------------------------------------------
 #  WHAT IS HAPPENING HERE???????

@@ -53,7 +53,7 @@
         #$minPlayers = $_POST['minPlayers'];
         $close_hours = $_SESSION['close_hours'];
         if ($close_hours == NULL) {
-            $close_hours = 12;
+            $close_hours = 1;
         }
 
         # TRATAR O DIA RECEBIDO E TRANSFORMAR EM DATA        
@@ -71,7 +71,7 @@
             $last_id = $conn->insert_id;
             $allUsers = getAllUsers($conn);
             # enviar e-mail
-            //f_sendMail($conn, "create", $last_id, $allUsers);
+            f_sendMail($conn, "create", $last_id, $allUsers);
             
             
             # Inserindo na tabela JOGO se jogado pela 1a vez

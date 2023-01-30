@@ -67,9 +67,7 @@ if (isset($_POST['submit'])) {
   <div class="container-contact100">
     <div class="wrap-contact100">
       <form class="contact100-form validate-form" method="post" action="register.php" enctype="multipart/form-data">
-
         <span class="contact100-form-title">Novo Jogador</span>
-
         <div class="wrap-input100 validate-input bg1">
           <span class="label-input100">Nome de Usuário</span>
           <input class="input100" type="text" name="username" id="username" placeholder="" value="" required>
@@ -114,7 +112,6 @@ if (isset($_POST['submit'])) {
           </button>
         </a>
       </div>
-
     </div>
   </div>
 

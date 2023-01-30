@@ -7,16 +7,23 @@ include 'db_con.php';
 # INITIALIZE PHP MAILER
 #------------------------------------------------------------------------------
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-require("phpmailer/PHPMailer.php");
-require("phpmailer/SMTP.php");
+
+require 'phpmailer/Exception.php';
+require 'phpmailer/PHPMailer.php';
+require 'phpmailer/SMTP.php';
 
 #--------------------------------------------------------------------------------------------------------
 # GLOBALS / CONSTANTS
 #--------------------------------------------------------------------------------------------------------
 
 $maxNrPlayers = 7;
+
+#TEST
+$link = "<a href ='http://localhost/agendabg/</a>";
+#PROD
+#$link = "<a href ='http://jogatina.epizy.com/</a>";
+
 
 #--------------------------------------------------------------------------------------------------------
 # Function that returns player picture.... ??????????
@@ -387,18 +394,19 @@ function setUserPic($conn, $user)
 }
 */
 
-function f_getPlayersClass($nr_slots_taken){
-    
+function f_getPlayersClass($nr_slots_taken)
+{
+
     $class = "players-2";
 
     if ($nr_slots_taken > 6) {
         $class = "players-8";
-    }elseif ($nr_slots_taken > 4) {
+    } elseif ($nr_slots_taken > 4) {
         $class = "players-6";
-    }elseif ($nr_slots_taken > 2) {
+    } elseif ($nr_slots_taken > 2) {
         $class = "players-4";
     }
-    
+
     return $class;
 }
 
@@ -411,13 +419,13 @@ function f_getPlayersClass($nr_slots_taken){
 ##-------------------------------------------------------------------------------------------------------
 function f_printPlayer($conn, $row_players, $row_score)
 {
-    $p = 1;    
+    $p = 1;
     # Se o $row_players não for nulo, o evento é futuro e será listado normalmente                
     if ($row_players != NULL) {
         #$index = count($row_players);
 
         #for ($j = 0; $j < $index; $j++) {
-        foreach($row_players as $value) {            
+        foreach ($row_players as $value) {
 
             if ($value != NULL) { #As long as there is an user left to list
                 $loop_pic = f_query($conn, "SELECT user_pic FROM tb_users WHERE user = '$value'");
@@ -426,23 +434,20 @@ function f_printPlayer($conn, $row_players, $row_score)
                         <p class='image-caption'>$value</p>
                       </div>";
                 $p++;
-
             } else {
                 break;
             }
         }
 
-    # Se o $row_players for nulo, o evento ja aconteceu e os resultados são listados    
-    }
-    else
-    {
+        # Se o $row_players for nulo, o evento ja aconteceu e os resultados são listados    
+    } else {
 
         $index = count($row_score);
         $matrix_index = 0;
 
         # Se a posição for 0 (zero), o jogo é cooperativo, não tem ranking (APENAS WINNERS E LOSERS)        
         if ($row_score[$matrix_index][1] == 0 & $row_score[$matrix_index][2] == 0) {
-            
+
             #----------------------------------
             # COOPERATIVO
             #----------------------------------
@@ -569,6 +574,22 @@ function f_updateRecord($conn, $eventID, $tmp_record_score, $tmp_record_user_id)
     }
 }
 
+
+function f_mail_player_list($userList)
+{
+    $temp_local_user = $_COOKIE["user"];
+    $temp_users = "";
+    $new_index = 1;
+    foreach ($userList as $element) {
+        $temp_users = $temp_users . "$new_index: $element<br>";
+        $new_index++;
+    }
+
+    $temp_users = $temp_users . "$new_index: $temp_local_user";
+    return $temp_users;
+}
+
+
 #--------------------------------------------------------------------------------------------------------
 # EMAIL NOTIFICATION
 #--------------------------------------------------------------------------------------------------------
@@ -579,20 +600,25 @@ function f_sendMail($conn, $type, $id, $userList)
     $mail->IsSMTP(); # enable SMTP
     $mail->SMTPDebug = 0; # debugging: 1 = errors and messages, 2 = messages only
     $mail->SMTPAuth = true; # authentication enabled
-    $mail->SMTPSecure = 'ssl'; # secure transfer enabled REQUIRED for Gmail
-    $mail->Host = "smtp.gmail.com";
-    $mail->Port = 465; # or 587
+    #$mail->SMTPSecure = 'ssl'; # secure transfer enabled REQUIRED for Gmail
+    $mail->SMTPSecure = 'tls'; # secure transfer enabled REQUIRED for Gmail
+    #$mail->Host = "smtp.gmail.com";
+    $mail->Host = "email-smtp.us-east-1.amazonaws.com";
+    #$mail->Port = 465; # or 2465
+    $mail->Port = 587;
+    #$mail->Port = 2465;
     $mail->IsHTML(true);
-    $mail->Username = "gamecornerbr@gmail.com";
-    $mail->setFrom('gamecornerbr@gmail.com', 'BoardGame Corner');
-    $mail->Password = "01argonia10";
+    $mail->Username = "AKIAQ6G2M3W7WCZXBQF4";
+    $mail->setFrom('alerta.gamecorner@gmail.com', 'BoardGame Corner');
+    $mail->Password = "BHe+lQzg0RTc9KHnqAHRdoYA2G9UQBim6K9c89CUHNvN";
     $mail->CharSet = 'UTF-8';
     #$mail->SMTPDebug = 2;
-    
+
     # With the event ID, SELECT in the database    
     $sql = "SELECT * FROM tb_diadejogo WHERE id_jogo = $id";
     $query = mysqli_query($conn, $sql);
     $row = array_filter(mysqli_fetch_row($query));
+    $jogo = $row[0];
     $date = $row[8];
     $user = $_COOKIE['user'];
     $horario = $row[10];
@@ -609,25 +635,27 @@ function f_sendMail($conn, $type, $id, $userList)
     # Link's info:
     # - $row[0] is the name of the game
     # ...
-    # ------------------------------------------------------        
-    $link = "<a href ='https://agendabg.000webhostapp.com/index.php?month=$month'>$row[0]</a>";
+    # ------------------------------------------------------
+
+
+    #$link = "<a href ='http://localhost/agendabg/</a>";    
 
     # ------------------------------------------------------
     # start the tests to differ between type of email
     # ------------------------------------------------------
 
     if ($type == "join") {
-        $mail_title_html = "<h2>$user aceitou o desafio de $creator! Quem sairá vitorioso?</h2>";
-        $subject = "Here comes a new challenger!";
-        $img_html = "<br><img style='float:left' src='http://www.superpcenginegrafx.net/img/herecomes.gif'>";
+        $mail_title_html = "";
+        $subject = "$user jogará $jogo em $formatedDate";
+        $img_html = "<img class='join_img' src='http://www.superpcenginegrafx.net/img/herecomes.gif'>";
     } else if ($type == "edit") {
         $mail_title_html = "<h2>O jogador $user modificou um evento!</h2>";
         $subject = "Um evento foi modificado!";
         $img_html = "";
     } elseif ($type == "cancel") {
-        $mail_title_html = "<h2>O jogador $user cancelou um evento!</h2>";
-        $subject = "Um Evento foi cancelado!";
-        $link = $row[0];
+        $mail_title_html = "<h2>Um jogo foi cancelado</h2>";
+        $subject = "$user canceloy $jogo em $formatedDate";
+        $link = $jogo;
         $img_html = "";
     } elseif ($type == "create") {
         $mail_title_html = "<h2>O jogador $user criou um evento!</h2>";
@@ -642,41 +670,48 @@ function f_sendMail($conn, $type, $id, $userList)
     $mail->Body = "
         <html>
         <head>
-        <style>
-        body{width:90%}        
-        table {width:600px}
-        .container{display:grid; grid-template-columns: 30% 30%; grid-gap: 1em; padding: 1em;}        
-        td, th { border: 1px solid #dddddd; text-align: left; padding: 15px; }                     
-        </style>
-        </head>
-        <body>              
-            $mail_title_html
-            <br>
-            <table>
-            <tr>
-                <th>Jogo</th>
-                <td>$link</td>
-            </tr>
-            <tr>
-                <th>Data</th>
-                <td>$formatedDate</td>
-            </tr>
-            <tr>
-                <th>Hora</th>
-                <td>$horario</td>
-            </tr>
-            <tr>
-                <th>Local</th>
-                <td>$local</td>
-            </tr>
-            <tr>
-                <th>Registar</th>
-                <td><a href='https://agendabg.000webhostapp.com/index.php?join=1&id=$id&date=$date'>Clique aqui</a></td>
-            </tr>
-            </table>                           
-            </div>
-        </body>
-        </html>";
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+    </style>
+  </head>
+  <body>
+  <br>
+  $img_html
+  <br>
+  <table>
+  <tr>
+    <th>Jogo</th>
+    <td>$jogo</td>
+  </tr>
+  <tr>
+    <th>Data</th>
+    <td>$formatedDate</td>
+  </tr>
+  <tr>
+    <th>Local</th>
+    <td>$local</td>
+  </tr>
+  <tr>
+    <th>Confirmados</th>
+    <td>".f_mail_player_list($userList)."</td>
+  </tr>
+</table>
+</body>
+</html>";
 
     $sql = "SELECT mail FROM tb_users WHERE user IN ('" . implode("','", $userList) . "')";
     $query = mysqli_query($conn, $sql);

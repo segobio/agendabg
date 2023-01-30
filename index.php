@@ -94,6 +94,7 @@ if (isset($_GET['join']) && $_GET['join'] == 1) { # Player is quick-joining an e
                 $sql = "UPDATE tb_diadejogo SET $indexJogador = '$user_logged' WHERE id_jogo = $eventID";
 
                 if ($conn->query($sql) === TRUE) {
+                    f_sendMail($conn, "join", $eventID, $user_loggedList);
                     header("Location: index.php");
                 }
             }
